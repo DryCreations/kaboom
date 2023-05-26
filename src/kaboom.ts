@@ -3772,7 +3772,6 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 
 		const colliding = {}
 		const collidingThisFrame = new Set()
-		const events = []
 
 		return {
 
@@ -3803,10 +3802,6 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 					}
 				}
 				collidingThisFrame.clear()
-			},
-			
-			destroy() {
-				events.forEach((e)=>e.cancel())
 			},
 
 			drawInspect(this: GameObj<AreaComp | AnchorComp | FixedComp>) {
@@ -3890,7 +3885,7 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 						f()
 					}
 				})
-				events.push(e)
+				this.onDestroy(()=>e.cancel())
 				return e
 			},
 
@@ -3906,7 +3901,7 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 						hovering = this.isHovering()
 					}
 				})
-				events.push(e)
+				this.onDestroy(()=>e.cancel())
 				return e
 			},
 
@@ -3916,7 +3911,7 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 						onHover()
 					}
 				})
-				events.push(e)
+				this.onDestroy(()=>e.cancel())
 				return e
 			},
 
@@ -3932,7 +3927,7 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 						hovering = this.isHovering()
 					}
 				})
-				events.push(e)
+				this.onDestroy(()=>e.cancel())
 				return e
 			},
 
@@ -3943,7 +3938,7 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 			): EventController {
 				if (typeof tag === "function" && cb === undefined) {
 					const e = this.on("collide", tag)
-					events.push(e)
+					this.onDestroy(()=>e.cancel())
 					return e
 				} else if (typeof tag === "string") {
 					const e = this.onCollide((obj, col) => {
@@ -3951,7 +3946,7 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 							cb(obj, col)
 						}
 					})
-					events.push(e)
+					this.onDestroy(()=>e.cancel())
 					return e
 				}
 			},
@@ -3963,11 +3958,11 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 			): EventController {
 				if (typeof tag === "function" && cb === undefined) {
 					const e = this.on("collideUpdate", tag)
-					events.push(e)
+					this.onDestroy(()=>e.cancel())
 					return e
 				} else if (typeof tag === "string") {
 					const e = this.on("collideUpdate", (obj, col) => obj.is(tag) && cb(obj, col))
-					events.push(e)
+					this.onDestroy(()=>e.cancel())
 					return e
 				}
 			},
@@ -3979,11 +3974,11 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 			): EventController {
 				if (typeof tag === "function" && cb === undefined) {
 					const e = this.on("collideEnd", tag)
-					events.push(e)
+					this.onDestroy(()=>e.cancel())
 					return e
 				} else if (typeof tag === "string") {
 					const e = this.on("collideEnd", (obj) => obj.is(tag) && cb(obj))
-					events.push(e)
+					this.onDestroy(()=>e.cancel())
 					return e
 				}
 			},
