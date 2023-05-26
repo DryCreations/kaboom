@@ -3896,7 +3896,7 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 
 			onHover(this: GameObj, action: () => void): EventController {
 				let hovering = false
-				return this.onUpdate(() => {
+				const e = this.onUpdate(() => {
 					if (!hovering) {
 						if (this.isHovering()) {
 							hovering = true
@@ -3906,19 +3906,23 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 						hovering = this.isHovering()
 					}
 				})
+				events.push(e)
+				return e
 			},
 
 			onHoverUpdate(this: GameObj, onHover: () => void): EventController {
-				return this.onUpdate(() => {
+				const e = this.onUpdate(() => {
 					if (this.isHovering()) {
 						onHover()
 					}
 				})
+				events.push(e)
+				return e
 			},
 
 			onHoverEnd(this: GameObj, action: () => void): EventController {
 				let hovering = false
-				return this.onUpdate(() => {
+				const e = this.onUpdate(() => {
 					if (hovering) {
 						if (!this.isHovering()) {
 							hovering = false
@@ -3928,6 +3932,8 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 						hovering = this.isHovering()
 					}
 				})
+				events.push(e)
+				return e
 			},
 
 			onCollide(
@@ -3936,13 +3942,17 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 				cb?: (obj: GameObj, col?: Collision) => void,
 			): EventController {
 				if (typeof tag === "function" && cb === undefined) {
-					return this.on("collide", tag)
+					const e = this.on("collide", tag)
+					events.push(e)
+					return e
 				} else if (typeof tag === "string") {
-					return this.onCollide((obj, col) => {
+					const e = this.onCollide((obj, col) => {
 						if (obj.is(tag)) {
 							cb(obj, col)
 						}
 					})
+					events.push(e)
+					return e
 				}
 			},
 
@@ -3952,9 +3962,13 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 				cb?: (obj: GameObj, col?: Collision) => void,
 			): EventController {
 				if (typeof tag === "function" && cb === undefined) {
-					return this.on("collideUpdate", tag)
+					const e = this.on("collideUpdate", tag)
+					events.push(e)
+					return e
 				} else if (typeof tag === "string") {
-					return this.on("collideUpdate", (obj, col) => obj.is(tag) && cb(obj, col))
+					const e = this.on("collideUpdate", (obj, col) => obj.is(tag) && cb(obj, col))
+					events.push(e)
+					return e
 				}
 			},
 
@@ -3964,9 +3978,13 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 				cb?: (obj: GameObj) => void,
 			): EventController {
 				if (typeof tag === "function" && cb === undefined) {
-					return this.on("collideEnd", tag)
+					const e = this.on("collideEnd", tag)
+					events.push(e)
+					return e
 				} else if (typeof tag === "string") {
-					return this.on("collideEnd", (obj) => obj.is(tag) && cb(obj))
+					const e = this.on("collideEnd", (obj) => obj.is(tag) && cb(obj))
+					events.push(e)
+					return e
 				}
 			},
 
