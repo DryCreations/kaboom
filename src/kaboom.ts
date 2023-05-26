@@ -3772,6 +3772,7 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 
 		const colliding = {}
 		const collidingThisFrame = new Set()
+		const events = []
 
 		return {
 
@@ -3802,6 +3803,10 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 					}
 				}
 				collidingThisFrame.clear()
+			},
+			
+			destroy() {
+				events.forEach((e)=>e.cancel())
 			},
 
 			drawInspect(this: GameObj<AreaComp | AnchorComp | FixedComp>) {
@@ -3880,11 +3885,13 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 			},
 
 			onClick(this: GameObj<AreaComp>, f: () => void): EventController {
-				return app.onMousePress("left", () => {
+				const e = app.onMousePress("left", () => {
 					if (this.isHovering()) {
 						f()
 					}
 				})
+				events.push(e)
+				return e
 			},
 
 			onHover(this: GameObj, action: () => void): EventController {
