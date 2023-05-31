@@ -1,4 +1,4 @@
-const VERSION = "3000.0.1"
+const VERSION = "3000.0.3"
 
 import initApp from "./app"
 
@@ -4054,6 +4054,16 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 		}
 	}
 
+	function children(list) {
+		return {
+			add(this: GameObj) {
+				for (const child of list) {
+					this.add(list)
+				}
+			},
+		}
+	}
+
 	// TODO: clean
 	function sprite(
 		src: string | SpriteData | Asset<SpriteData>,
@@ -6699,7 +6709,7 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 		isCursorLocked: app.isCursorLocked,
 		setFullscreen: app.setFullscreen,
 		isFullscreen: app.isFullscreen,
-		isTouchScreen: app.isTouchScreen,
+		isTouchscreen: app.isTouchscreen,
 		onLoad,
 		onLoading,
 		onResize,
@@ -6721,6 +6731,7 @@ export default (gopt: KaboomOpt = {}): KaboomCtx => {
 		getGamepads: app.getGamepads,
 		// obj
 		add,
+		make,
 		destroy,
 		destroyAll,
 		get,
